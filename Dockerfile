@@ -56,5 +56,5 @@ ENTRYPOINT [ "/app/docker-entrypoint.js" ]
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
 ENV DATABASE_URL="postgresql://ping-pong_owner:Tmy4W6pldOKZ@ep-raspy-dream-a2scjcfy-pooler.eu-central-1.aws.neon.tech/ping-pong?sslmode=require"
-ENV SWAGGER_URL="https://nw-golden-racket.fly.dev/"
+ENV SWAGGER_URL="https://joule-ping-pong.fly.dev/"
 CMD [ "npm", "run", "start" ]

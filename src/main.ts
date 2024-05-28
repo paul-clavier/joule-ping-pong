@@ -10,7 +10,7 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe());
 
     const config = new DocumentBuilder()
-        .setTitle("NW Golden Racket")
+        .setTitle("Joule PingPong")
         .setVersion("0.1")
         .build();
 
