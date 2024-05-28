@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dbsqlite3.db"
+// }
+
+model Player {
+  id        Int       @id @default(autoincrement())
+  firstName String
+  lastName  String
+  pseudo    String
+  elo       Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  wonGames  Game[]    @relation(name: "wonGames")
+  lostGames Game[]    @relation(name: "lostGames")
+  history   History[]
+}
+
+model Game {
+  id              Int       @id @default(autoincrement())
+  winningPlayerId Int
+  winningPlayer   Player    @relation(fields: [winningPlayerId], references: [id], name: "wonGames")
+  loosingPlayerId Int
+  loosingPlayer   Player    @relation(fields: [loosingPlayerId], references: [id], name: "lostGames")
+  format          String
+  specialTag      String?
+  history         History[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model History {
+  id          Int      @id @default(autoincrement())
+  playerId    Int
+  player      Player   @relation(fields: [playerId], references: [id])
+  gameId      Int
+  game        Game     @relation(fields: [gameId], references: [id])
+  scoreBefore Int
+  scoreAfter  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
