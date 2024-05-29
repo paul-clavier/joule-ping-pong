@@ -1,5 +1,5 @@
 {
-    "name": "nw-golden-racket",
+    "name": "joule-ping-pong",
     "version": "0.0.1",
     "description": "",
     "author": "",
@@ -11,8 +11,9 @@
         "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
         "db": "docker compose up -d postgres",
         "seed": "ts-node prisma/prisma.seed.ts",
+        "migrate": "npx prisma migrate dev",
         "studio": "npx prisma studio",
-        "deploy": "fly deploy",
+        "deploy": "/home/paul/.fly/bin/flyctl deploy",
         "dev": "nest start --watch",
         "start": "nest start",
         "start:dev": "nest start --watch",

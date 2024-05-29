@@ -3,58 +3,56 @@ import { Player, PrismaClient } from "@prisma/client";
 
 @Injectable()
 export class PlayerService {
-    constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: PrismaClient) {}
 
-    findPlayer = async (playerName: string): Promise<Player> => {
-        try {
-            const playerFromFirstName = this.findPlayerByFirstName(playerName);
-            return playerFromFirstName;
-        } catch (error) {
-            return this.findPlayerByPseudo(playerName);
-        }
-    };
+  findPlayer = async (playerName: string): Promise<Player> => {
+    try {
+      const playerFromFirstName = this.findPlayerByFirstName(playerName);
+      return playerFromFirstName;
+    } catch (error) {
+      return this.findPlayerByPseudo(playerName);
+    }
+  };
 
-    private findPlayerByFirstName = async (
-        playerName: string,
-    ): Promise<Player> => {
-        const playerFromFirstName = await this.prisma.player.findMany({
-            where: { firstName: playerName },
-        });
+  private findPlayerByFirstName = async (
+    playerName: string,
+  ): Promise<Player> => {
+    const playerFromFirstName = await this.prisma.player.findMany({
+      where: { firstName: playerName },
+    });
 
-        if (playerFromFirstName.length === 0) {
-            throw new BadRequestException(
-                `The player ${playerName} does not exist in the database`,
-            );
-        }
+    if (playerFromFirstName.length === 0) {
+      throw new BadRequestException(
+        `The player ${playerName} does not exist in the database`,
+      );
+    }
 
-        if (playerFromFirstName.length > 1) {
-            throw new BadRequestException(
-                `The player ${playerName} exists multiple times in the database. Please use a pseudo.`,
-            );
-        }
+    if (playerFromFirstName.length > 1) {
+      throw new BadRequestException(
+        `The player ${playerName} exists multiple times in the database. Please use a pseudo.`,
+      );
+    }
 
-        return playerFromFirstName.pop();
-    };
+    return playerFromFirstName.pop();
+  };
 
-    private findPlayerByPseudo = async (
-        playerName: string,
-    ): Promise<Player> => {
-        const playerFromPseudo = await this.prisma.player.findMany({
-            where: { pseudo: playerName },
-        });
+  private findPlayerByPseudo = async (playerName: string): Promise<Player> => {
+    const playerFromPseudo = await this.prisma.player.findMany({
+      where: { pseudo: playerName },
+    });
 
-        if (playerFromPseudo.length === 0) {
-            throw new BadRequestException(
-                `The player ${playerName} does not exist in the database`,
-            );
-        }
+    if (playerFromPseudo.length === 0) {
+      throw new BadRequestException(
+        `The player ${playerName} does not exist in the database`,
+      );
+    }
 
-        if (playerFromPseudo.length > 1) {
-            throw new BadRequestException(
-                `The player ${playerName} exists multiple times in the database.`,
-            );
-        }
+    if (playerFromPseudo.length > 1) {
+      throw new BadRequestException(
+        `The player ${playerName} exists multiple times in the database.`,
+      );
+    }
 
-        return playerFromPseudo.pop();
-    };
+    return playerFromPseudo.pop();
+  };
 }

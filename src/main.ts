@@ -5,18 +5,18 @@ import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
-    app.enableCors({ origin: SWAGGER_URL });
-    app.useGlobalPipes(new ValidationPipe());
+  const app = await NestFactory.create(AppModule);
+  app.enableCors({ origin: SWAGGER_URL });
+  app.useGlobalPipes(new ValidationPipe());
 
-    const config = new DocumentBuilder()
-        .setTitle("Joule PingPong")
-        .setVersion("0.1")
-        .build();
+  const config = new DocumentBuilder()
+    .setTitle("Joule PingPong")
+    .setVersion("0.1")
+    .build();
 
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup("api", app, document);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup("api", app, document);
 
-    await app.listen(3000);
+  await app.listen(3000);
 }
 bootstrap();

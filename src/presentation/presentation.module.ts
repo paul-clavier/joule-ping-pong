@@ -7,14 +7,14 @@ import { GameController } from "./game.controller";
 import { EloService } from "./elo.service";
 
 @Module({
-    imports: [DomainModule],
-    providers: [
-        PlayerController,
-        GameController,
-        PrismaClient,
-        PlayerService,
-        EloService,
-    ],
-    controllers: [PlayerController, GameController],
+  imports: [DomainModule],
+  providers: [
+    PlayerController,
+    GameController,
+    PrismaClient,
+    PlayerService,
+    EloService,
+  ],
+  controllers: [PlayerController, GameController],
 })
 export class PresentationModule {}
