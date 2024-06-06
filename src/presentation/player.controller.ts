@@ -21,19 +21,20 @@ export class PlayerController {
   @ApiQuery({ name: "firstName", type: String, required: false })
   @ApiOkResponse({ type: PlayerResponseDto, isArray: true })
   async getPlayers(@Query() { firstName }: PlayerQueryDto) {
-    return this.prisma.player.findMany({
-      where: {
-        firstName,
-      },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        pseudo: true,
-        elo: true,
-      },
-      orderBy: { elo: "desc" },
-    });
+    return this.prisma.player
+      .findMany({
+        select: {
+          id: true,
+          firstName: true,
+          elo: true,
+        },
+        orderBy: { elo: "desc" },
+      })
+      .then((players) =>
+        players
+          .map((player) => ({ ...player, rank: players.indexOf(player) + 1 }))
+          .filter((player) => !firstName || player.firstName === firstName),
+      );
   }
 
   @Get("/history")
@@ -61,6 +62,36 @@ export class PlayerController {
         .length,
       lost: data.filter((game) => game.loosingPlayer.firstName === player)
         .length,
+      BO1: {
+        win: data.filter(
+          (game) =>
+            game.winningPlayer.firstName === player && game.format === "BO1",
+        ).length,
+        lost: data.filter(
+          (game) =>
+            game.loosingPlayer.firstName === player && game.format === "BO1",
+        ).length,
+      },
+      BO3: {
+        win: data.filter(
+          (game) =>
+            game.winningPlayer.firstName === player && game.format === "BO3",
+        ).length,
+        lost: data.filter(
+          (game) =>
+            game.loosingPlayer.firstName === player && game.format === "BO3",
+        ).length,
+      },
+      BO5: {
+        win: data.filter(
+          (game) =>
+            game.winningPlayer.firstName === player && game.format === "BO5",
+        ).length,
+        lost: data.filter(
+          (game) =>
+            game.loosingPlayer.firstName === player && game.format === "BO5",
+        ).length,
+      },
       data,
     };
 
@@ -74,14 +105,35 @@ export class PlayerController {
     const player1 = await this.players.findPlayer(player1Name);
     const player2 = await this.players.findPlayer(player2Name);
 
-    const wonBy1 = await this.prisma.game.count({
+    const wonBy1 = await this.prisma.game.findMany({
       where: { winningPlayerId: player1.id, loosingPlayerId: player2.id },
     });
 
-    const wonBy2 = await this.prisma.game.count({
+    const wonBy2 = await this.prisma.game.findMany({
       where: { winningPlayerId: player2.id, loosingPlayerId: player1.id },
     });
-    return { [`win ${player1Name}`]: wonBy1, [`win ${player2Name}`]: wonBy2 };
+    return {
+      [`win ${player1Name}`]: wonBy1.length,
+      [`win ${player2Name}`]: wonBy2.length,
+      BO1: {
+        [`win ${player1Name}`]: wonBy1.filter((game) => game.format === "BO1")
+          .length,
+        [`win ${player2Name}`]: wonBy2.filter((game) => game.format === "BO1")
+          .length,
+      },
+      BO3: {
+        [`win ${player1Name}`]: wonBy1.filter((game) => game.format === "BO3")
+          .length,
+        [`win ${player2Name}`]: wonBy2.filter((game) => game.format === "BO3")
+          .length,
+      },
+      BO5: {
+        [`win ${player1Name}`]: wonBy1.filter((game) => game.format === "BO5")
+          .length,
+        [`win ${player2Name}`]: wonBy2.filter((game) => game.format === "BO5")
+          .length,
+      },
+    };
   }
 
   @Post()

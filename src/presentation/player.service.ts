@@ -6,11 +6,12 @@ export class PlayerService {
   constructor(private prisma: PrismaClient) {}
 
   findPlayer = async (playerName: string): Promise<Player> => {
+    const clearedPlayerName = playerName.trim().toLowerCase();
     try {
-      const playerFromFirstName = this.findPlayerByFirstName(playerName);
+      const playerFromFirstName = this.findPlayerByFirstName(clearedPlayerName);
       return playerFromFirstName;
     } catch (error) {
-      return this.findPlayerByPseudo(playerName);
+      return this.findPlayerByPseudo(clearedPlayerName);
     }
   };
 
