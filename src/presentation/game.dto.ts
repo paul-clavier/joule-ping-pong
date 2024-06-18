@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsIn, IsNotEmpty, IsString } from "class-validator";
 import { GameFormat } from "src/domain/game/game.entity";
 
-export const GAME_FORMATS = ["BO1", "BO3", "B05"];
+export const GAME_FORMATS = ["BO1", "BO3", "BO5"];
 
 export class GameRequestDto {
   @IsString()
